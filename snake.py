@@ -13,7 +13,7 @@ config = {
 		"corGameOver": (255, 0, 0)
 	},
 	"jogo": {
-		"area": (50, 50),
+		"area": (50, 40),
 		"colidirBorda": False,
 		"colidirSnake": True
 	},
@@ -21,10 +21,8 @@ config = {
 		"tamanho": (16, 16)
 	},
 	"snake": {
-		# "tamanhoInicial": 4,
-		# "velocidade": 100,
-		"tamanhoInicial": 15,
-		"velocidade": 50,
+		"tamanhoInicial": 4,
+		"velocidade": 100,
 		"velocidadeMinima": 15,
 		"direcaoInicial": pg.K_RIGHT,
 		"imagem": "snake.png",
@@ -172,6 +170,20 @@ class Controle(object):
 				if i == 0:
 					direcao = config["direcoes"][self.direcao]
 					novoX, novoY = x + direcao[0], y + direcao[1]
+
+					# Definir movimento automático da snake
+					# if self.direcao == pg.K_DOWN:
+						# if novoX >= areaJogo[0] - 1:
+							# self.direcao = pg.K_LEFT
+						# else:
+							# self.direcao = pg.K_RIGHT
+					# if novoX < 0:
+						# self.direcao = pg.K_DOWN
+					# if novoX >= areaJogo[0]:
+						# self.direcao = pg.K_DOWN
+
+					# direcao = config["direcoes"][self.direcao]
+					# novoX, novoY = x + direcao[0], y + direcao[1]
 				else:
 					novoX, novoY = posicaoVaga[0], posicaoVaga[1]
 
@@ -226,11 +238,14 @@ class Controle(object):
 
 		posicaoPontoValida = False
 		while not posicaoPontoValida:
-			posicaoPonto = [random.randint(0, areaJogo[0] - 1), random.randint(0, areaJogo[0] - 1)]
+			posicaoPonto = [random.randint(0, areaJogo[0] - 1), random.randint(0, areaJogo[1] - 1)]
 			if config["area"][posicaoPonto[0]][posicaoPonto[1]] == 0:
 				posicaoPontoValida = True
 				config["area"][posicaoPonto[0]][posicaoPonto[1]] = 2
 				self.pontoColeta = pg.sprite.Group(PontoColeta(calcularPosicao(posicaoPonto[0], posicaoPonto[1])))
+
+				if areaJogo[0] * areaJogo[1] == len(self.posicoes) + 1:
+					self.jogoFinalizado = True
 
 	def aumentarVelocidade(self):
 		modificadorVelocidade = 0
